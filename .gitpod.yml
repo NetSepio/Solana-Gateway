@@ -4,7 +4,7 @@ tasks:
   - name: golang live
     init: |
       go install gotest.tools/gotestsum@latest
-      go get && go build ./...
+      go get && go build -o build/solana-gateway
     command: |
       docker run --name="netsepio_db" --rm -d -p 5432:5432 \
       -e POSTGRES_PASSWORD=netsepio_db \
