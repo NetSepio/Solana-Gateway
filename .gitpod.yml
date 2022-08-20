@@ -1,0 +1,26 @@
+image:
+  file: .gitpod/Dockerfile
+tasks:
+  - name: golang live
+    init: |
+      go install gotest.tools/gotestsum@latest
+      go get && go build ./...
+    command: |
+      docker run --name="netsepio_db" --rm -d -p 5432:5432 \
+      -e POSTGRES_PASSWORD=netsepio_db \
+      -e POSTGRES_USER=netsepio_db \
+      -e POSTGRES_DB=netsepio_db \
+      postgres -c log_statement=all
+      sleep 12
+      gp sync-done db
+      cp .env-sample .env
+      air
+  
+  - name: postgres shell
+    command: |
+      gp sync-await db
+      docker exec -it netsepio_db psql -U netsepio_db
+    
+vscode:
+  extensions:
+    - golang.go
