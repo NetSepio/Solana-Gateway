@@ -31,7 +31,7 @@ func GetFlowId(c *gin.Context) {
 	_, err := solana.PublicKeyFromBase58(walletAddress)
 	if err != nil {
 		log.Errorf("failed to get pubkey from wallet address (base58) %s: %s", walletAddress, err)
-		httpo.NewErrorResponse(httpo.WalletAddressInvalid, "failed to parse bech32 Wallet address (walletAddress)").Send(c, http.StatusBadRequest)
+		httpo.NewErrorResponse(httpo.WalletAddressInvalid, "failed to parse wallet address (walletAddress)").Send(c, http.StatusBadRequest)
 		return
 	}
 
