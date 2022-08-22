@@ -30,8 +30,7 @@ func Test_PostAuthenticate(t *testing.T) {
 		testWallet := testingcommon.GenerateWallet()
 		eula, flowId := callFlowIdApi(testWallet.WalletAddress, t)
 		signature := getSignature(eula, flowId, testWallet)
-		pubKeyBase58 := testWallet.PrivKey.PublicKey().String()
-		body := AuthenticateRequest{Signature: signature, FlowId: flowId, PublicKey: pubKeyBase58}
+		body := AuthenticateRequest{Signature: signature, FlowId: flowId}
 		jsonBody, err := json.Marshal(body)
 		if err != nil {
 			t.Fatal(err)
@@ -54,9 +53,8 @@ func Test_PostAuthenticate(t *testing.T) {
 		eula, flowId := callFlowIdApi(testWallet.WalletAddress, t)
 		// Different private key will result in different wallet address
 		differentWallet := testingcommon.GenerateWallet()
-		pubKeyBase58 := testWallet.PrivKey.PublicKey().String()
 		signature := getSignature(eula, flowId, differentWallet)
-		body := AuthenticateRequest{Signature: signature, FlowId: flowId, PublicKey: pubKeyBase58}
+		body := AuthenticateRequest{Signature: signature, FlowId: flowId}
 		jsonBody, err := json.Marshal(body)
 		if err != nil {
 			t.Fatal(err)
@@ -82,8 +80,7 @@ func Test_PostAuthenticate(t *testing.T) {
 		// Non existance flow id
 		randomFlowId := uuid.NewString()
 		signature := getSignature(eula, randomFlowId, testWallet)
-		pubKeyBase58 := testWallet.PrivKey.PublicKey().String()
-		body := AuthenticateRequest{Signature: signature, FlowId: randomFlowId, PublicKey: pubKeyBase58}
+		body := AuthenticateRequest{Signature: signature, FlowId: randomFlowId}
 		jsonBody, err := json.Marshal(body)
 		if err != nil {
 			t.Fatal(err)

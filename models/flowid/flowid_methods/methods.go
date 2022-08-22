@@ -16,7 +16,7 @@ var ErrPubKeyDenied = errors.New("public key denied")
 // VerifySignAndGetPaseto verifies the signature for given flowID and returns paseto if it is valid
 //
 // Also deletes the flow id after approving signature
-func VerifySignAndGetPaseto(publicKey solanasdk.PublicKey, signatureHex string, flowId string) (string, error) {
+func VerifySignAndGetPaseto(signatureHex string, flowId string) (string, error) {
 
 	dataFlowId, err := flowid.GetFlowId(flowId)
 	if err != nil {
@@ -32,10 +32,11 @@ func VerifySignAndGetPaseto(publicKey solanasdk.PublicKey, signatureHex string, 
 		return "", fmt.Errorf("failed to get signature from hex signature: %w", err)
 	}
 
-	if publicKey.String() != dataFlowId.WalletAddress {
-		return "", ErrPubKeyDenied
+	pubKey, err := solanasdk.PublicKeyFromBase58(dataFlowId.WalletAddress)
+	if err != nil {
+		return "", fmt.Errorf("failed to get pubkey from wallet address referred by flowid: %w", err)
 	}
-	signatureApproved := solanaSignature.Verify(publicKey, []byte(signingData))
+	signatureApproved := solanaSignature.Verify(pubKey, []byte(signingData))
 
 	//If signature not approved then return error
 	if !signatureApproved {

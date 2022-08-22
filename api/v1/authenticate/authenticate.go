@@ -10,7 +10,6 @@ import (
 	"github.com/TheLazarusNetwork/go-helpers/httpo"
 	"github.com/TheLazarusNetwork/go-helpers/logo"
 	"github.com/gin-gonic/gin"
-	"github.com/streamingfast/solana-go"
 )
 
 // ApplyRoutes applies router to gin Router
@@ -29,16 +28,8 @@ func authenticate(c *gin.Context) {
 			Send(c, http.StatusBadRequest)
 		return
 	}
-	// Get public key from base58
-	pubKey, err := solana.PublicKeyFromBase58(req.PublicKey)
-	if err != nil {
-		logo.Errorf("failed to get public key from base58: %s", err)
-		httpo.NewErrorResponse(http.StatusBadRequest, "failed to get public key from base58").
-			Send(c, http.StatusBadRequest)
-		return
-	}
 
-	pasetoToken, err := flowidmethods.VerifySignAndGetPaseto(pubKey, req.Signature, req.FlowId)
+	pasetoToken, err := flowidmethods.VerifySignAndGetPaseto(req.Signature, req.FlowId)
 	if err != nil {
 		logo.Errorf("failed to get paseto: %s", err)
 
